@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}"></head>
+<head>
+    <title>朝花夕拾</title>
+</head>
+<style>
+    #title {
+        word-wrap: break-word;
+    }
+    .ellipsis a {
+        display: block;
+        overflow: hidden;
+        word-break: keep-all;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+<body>
+<!-- Page Content -->
+<div class="container blog-content-container">
+
+    <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+
+            <div id="mainContainer">
+                <div id="mainContainerRepleace">
+                    <div class="card mb-4" th:each="blog : ${blogList}">
+                        <div class="card-block">
+                            <h2 class="card-title">
+                                <div style="float:left;">
+                                    <a href="/u/waylau" title="waylau" th:href="'/u/' + ${blog.username}"
+                                       th:title="${blog.username}">
+                                        <img src="/images/avatar-defualt.jpg"
+                                             th:src="${blog.avatar} == null ? '/images/avatar-defualt.jpg' : ${blog.avatar}"
+                                             class="blog-avatar-50">
+                                    </a>&nbsp;
+                                </div>
+                                <div>
+                                    <a id="title" href="/u/waylau/blogs/1" class="card-link" title="title"
+                                       th:href="'/u/' + ${blog.username} + '/blogs/'+ ${blog.blogId}"
+                                       th:title="${blog.title}" th:text="${blog.title}">
+                                        OAuth 2.0 认证的原理与实践
+                                    </a>
+                                </div>
+                            </h2>
+                            <div class="card-title">
+                                <b>摘要&nbsp;:&nbsp;</b>
+                                <span class="card-text" th:text="${blog.summary}">使用 OAuth 2.0</span>
+                            </div>
+
+                            <div class="card-text">
+                                <a href="/u/waylau" th:href="'/u/' + ${blog.username}" class="card-link"
+                                   th:text=${blog.name}>waylau</a>&nbsp;
+                                发表于 [[${#dates.format(blog.createTime, 'yyyy-MM-dd HH:mm')}]]
+                                &nbsp;&nbsp;
+                                <i class="fa fa-eye" aria-hidden="true"></i> [[${blog.readSize}]]
+                                <i class="fa fa-heart-o" style="color: red" aria-hidden="true"></i> [[${blog.voteSize}]]
+                                <i class="fa fa-comment-o" aria-hidden="true"></i> [[${blog.commentSize}]]
+                            </div>
+                        </div>
+                    </div>
+                    <div th:replace="~{fragments/page :: page}">...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧栏目 -->
+        <div class="col-md-4">
+            <div>
+                <div class="card">
+                    <h5 class="card-header">
+                        <i class="fa fa-address-card-o" aria-hidden="true"></i>
+                        <a style="color: #000" href="https://baiyukun001.github.io/" target="_blank">
+                            关于站长
+                        </a>
+                    </h5>
+                </div>
+                <!-- 热门标签 -->
+                <div class="card  my-4">
+                    <h5 class="card-header"><i class="fa fa-tags" aria-hidden="true"></i> 热门标签</h5>
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <a th:each="tag, tagStat : ${tags}" th:object="${tag}" href="/blogs?keyword=1"
+                                   th:href="'/blogs?keyword=' +  *{name}">
+                                    <span class="badge"
+                                          th:classappend="${tagStat.index} eq 0 ? 'badge-danger': (${tagStat.index} eq 1 ? 'badge-warning':(${tagStat.index} eq 2 ? 'badge-info':'badge-default'))"
+                                          th:text="*{name}">
+                                        num
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 热门用户 -->
+                <div class="card my-4">
+                    <h5 class="card-header">
+                        <i class="fa fa-users" aria-hidden="true"></i> 热门用户
+                    </h5>
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-lg-12">
+								 <span th:each="user: ${users}" th:object="${user}">
+								  <a href="/u/waylau" th:href="'/u/' + *{username}" title="waylau"
+                                     th:title="*{username}">
+                                      <div style="text-align: center;float: left">
+                                         <img src="/images/avatar-defualt.jpg"
+                                              th:src="*{avatar} == null ? '/images/avatar-defualt.jpg' : *{avatar}"
+                                             class="blog-avatar-50">&nbsp;<br>
+                                          <span style="font-size: smaller">[[*{name}]]</span>
+                                      </div>
+                                  </a>&nbsp;
+								</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 热门文章 -->
+                <div class="card my-4">
+                    <h5 class="card-header">
+                        <i class="fa fa-fire" aria-hidden="true"></i> 热门文章
+                    </h5>
+                    <ul class="list-group" th:each="hotblog , hotblogStat : ${hotest}" th:object="${hotblog}">
+                        <div class="ellipsis">
+                            <a th:href="'/u/'+*{username} +'/blogs/'+ *{blogId}" class="list-group-item">
+                                <span style="width: 10%;" class="badge badge-pill"
+                                      th:classappend="${hotblogStat.index} eq 0 ? 'badge-danger': (${hotblogStat.index} eq 1 ? 'badge-warning':(${hotblogStat.index} eq 2 ? 'badge-info':'badge-default'))">[[*{readSize}]]</span>
+                                [[*{title}]]
+                            </a>
+                        </div>
+                    </ul>
+
+                </div>
+
+                <!-- 最新发布 -->
+                <div class="card my-4">
+                    <h5 class="card-header"><i class="fa fa-line-chart" aria-hidden="true"></i> 最新发布</h5>
+                    <div class="list-group">
+                        <ul class="list-group" th:each="newblog : ${newest}" th:object="${newblog}">
+                            <div class="ellipsis">
+                                <a th:href="'/u/'+*{username} +'/blogs/'+ *{blogId}" class="list-group-item">
+                                    <span class="badge badge-pill badge-default">
+                                        [[${#dates.format(newblog.createTime, 'yyyy-MM-dd')}]]
+                                    </span>
+                                        &nbsp;&nbsp;[[*{title}]]
+                                </a>
+                            </div>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+
+<div th:replace="~{fragments/footer :: footer}">...</div>
+
+<!-- JavaScript -->
+<script src="../../js/index.js" th:src="@{/js/index.js}"></script>
+
+</body>
+</html>
