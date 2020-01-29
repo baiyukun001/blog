@@ -84,10 +84,13 @@
                     </a>
                     <div class="dropdown-menu">
                         <a class=" dropdown-item" href="/u/baiyukun" th:href="@{'/u/' + ${#authentication.name}}">
-                            <i class="fa fa-user-circle" style="color: #5BC0DE;"></i>&nbsp;&nbsp;个人主页</a>
-                        <a class="dropdown-item" href="/u/baiyukun/profile"
-                           th:href="@{'/u/' + ${#authentication.name}} + '/profile'">
+                            <i class="fa fa-user-circle" style="color: #5BC0DE;"></i>&nbsp;&nbsp;个人主页
+                        </a>
+                        <a class="dropdown-item" href="/u/baiyukun/profile" th:href="@{'/u/' + ${#authentication.name}} + '/profile'">
                             <i class="fa fa-user-plus" style="color: #5BC0DE;"></i>&nbsp;&nbsp;个人设置
+                        </a>
+                        <a class=" dropdown-item" href="/u/baiyukun" th:if="${#authentication.name} eq 'admin'" th:href="@{'/admins'}">
+                            <i class="fa fa-users" style="color: #5BC0DE;"></i>&nbsp;&nbsp;用户管理
                         </a>
                     </div>
                 </div>&nbsp;
